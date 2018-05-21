@@ -1,6 +1,6 @@
 const fs = require('fs');
-const JSONStream = require('JSONStream');
 const mongoose = require('mongoose');
+const JSONStream = require('JSONStream');
 const es = require('event-stream');
 const User = require('./models/User');
 
@@ -12,14 +12,14 @@ const db = mongoose.connection;
 
 db.on('open', () => {
   console.log('Connected to mongo server.');
-  const dataSource = fs.createReadStream(`${__dirname}/users.json`);
+  const dataStreamFromFile = fs.createReadStream(`${__dirname}/users.json`);
 
-  dataSource.pipe(JSONStream.parse('*')).pipe(es.map(async (doc, next) => {
-    new User(doc).save();
+  dataStreamFromFile.pipe(JSONStream.parse('*')).pipe(es.map(async (userDocument, next) => {
+    new User(userDocument).save();
     return next();
   }));
 
-  dataSource.on('end', () => {
+  dataStreamFromFile.on('end', () => {
     console.log('Import complete, closing connection...');
     db.close();
     process.exit(0);
