@@ -15,9 +15,15 @@ db.on('open', () => {
   const dataSource = fs.createReadStream(`${__dirname}/users.json`);
 
   dataSource.pipe(JSONStream.parse('*')).pipe(es.map(async (doc, next) => {
-    await new User(doc).save();
+    new User(doc).save();
     return next();
   }));
+
+  dataSource.on('end', () => {
+    console.log('Import complete, closing connection...');
+    db.close();
+    process.exit(0);
+  });
 });
 
 db.on('error', () => {
