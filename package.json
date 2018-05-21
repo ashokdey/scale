@@ -13,6 +13,7 @@
     "nodemon": "^1.17.4"
   },
   "scripts": {
+    "dev": "nodemon script.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
