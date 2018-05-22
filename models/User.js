@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const isEmail = require('validator/lib/isEmail');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -15,6 +16,25 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['unregistered', 'complete'],
       default: 'unregistered',
+    },
+    phoneVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    email: {
+      type: String,
+      trim: true,
+      default: '',
+      validate: {
+        validator(v) {
+          return v ? isEmail(v) : true;
+        },
+        message: '{VALUE} is not a valid email!',
+      },
     },
     googleLocation: {
       loc: {
