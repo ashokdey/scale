@@ -1,0 +1,4 @@
+{
+  "PORT": "4040",
+  "MONGODB_URI": "mongodb://127.0.0.1/dextra"
+}

@@ -2,9 +2,9 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const JSONStream = require('JSONStream');
 const User = require('./models/User');
+const config = require('./config.json');
 
-const databaseURL = 'mongodb://127.0.0.1/dextra';
-mongoose.connect(databaseURL);
+mongoose.connect(config.MONGODB_URI);
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
