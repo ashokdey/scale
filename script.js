@@ -11,7 +11,7 @@ const db = mongoose.connection;
 
 db.on('open', () => {
   console.log('Connected to mongo server.');
-  const dataStreamFromFile = fs.createReadStream(`${__dirname}/largeUsers.json`);
+  const dataStreamFromFile = fs.createReadStream(`${__dirname}/users_large.json`);
 
   dataStreamFromFile.pipe(JSONStream.parse('*')).on('data', (jsonArray) => {
     new User(jsonArray).save();

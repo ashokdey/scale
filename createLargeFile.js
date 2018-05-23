@@ -18,7 +18,7 @@ for (let i = 0; i <= 1e6; i += 1) {
 }
 
 // write data to file
-fs.writeFile(`${__dirname}/largeUsers.json`, JSON.stringify(arrayOfUsers), (err) => {
+fs.writeFile(`${__dirname}/users_large.json`, JSON.stringify(arrayOfUsers), (err) => {
   if (err) {
     console.error(err);
     console.log('Error ocured, exiting...');

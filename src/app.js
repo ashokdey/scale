@@ -3,7 +3,7 @@ const cors = require('cors');
 const logger = require('morgan');
 const compression = require('compression');
 const expressValidator = require('express-validator');
-const config = require('./config.json');
+const config = require('../config.json');
 
 const app = express();
 
