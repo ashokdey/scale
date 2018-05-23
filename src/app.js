@@ -6,6 +6,7 @@ const expressValidator = require('express-validator');
 
 const config = require('../config.json');
 const routes = require('./routes');
+require('./database');
 
 const app = express();
 

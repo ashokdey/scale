@@ -21,7 +21,8 @@
     "nodemon": "^1.17.4"
   },
   "scripts": {
-    "dev": "nodemon script.js",
+    "dev": "nodemon src/app.js",
+    "script": "node srcipt.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

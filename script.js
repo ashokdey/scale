@@ -1,7 +1,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const JSONStream = require('JSONStream');
-const User = require('./models/User');
+const User = require('./src/models/User');
 const config = require('./config.json');
 
 mongoose.connect(config.MONGODB_URI);

@@ -9,28 +9,39 @@ allUsers.get('/all', async (req, res) => {
     req
       .checkQuery('limit', 'limit should be an integer')
       .isInt()
-      .optional();
+      .exists();
     req
-      .checkQuery('offset', 'offset should be an integer')
+      .checkQuery('currentPage', 'currentPage should be an integer')
       .isInt()
-      .optional();
+      .exists();
 
     const errors = req.validationErrors();
     if (errors) {
       return sendResponse(res, 422, {}, errors[0].msg);
     }
 
-    const userData = await UserModel.find({});
+    const currentPage = parseInt(req.query.currentPage, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 0;
+
+    const skip = limit * (currentPage - 1);
+
+    const userData = await UserModel.find({})
+      .limit(limit)
+      .skip(skip);
+
+    const totalRecords = await UserModel.find({}).count();
 
     return sendResponse(
       res,
       200,
       {
         users: userData,
+        totalRecords,
       },
       'Fetched users successfully',
     );
   } catch (err) {
+    console.error(err);
     return sendResponse(res, 500, {}, 'Something went wrong');
   }
 });
