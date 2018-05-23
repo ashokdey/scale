@@ -15,6 +15,11 @@ allUsers.get('/all', async (req, res) => {
       .isInt()
       .optional();
 
+    const errors = req.validationErrors();
+    if (errors) {
+      return sendResponse(res, 422, {}, errors[0].msg);
+    }
+
     const userData = await UserModel.find({});
 
     return sendResponse(
