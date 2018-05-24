@@ -4,7 +4,7 @@ const JSONStream = require('JSONStream');
 const User = require('./src/models/User');
 const config = require('./config.json');
 
-mongoose.connect(config.MONGODB_URI);
+mongoose.connect(config.MONGODB_URI, { poolSize: 50 });
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
@@ -14,7 +14,7 @@ db.on('open', () => {
   const dataStreamFromFile = fs.createReadStream(`${__dirname}/users_large.json`);
 
   dataStreamFromFile.pipe(JSONStream.parse('*')).on('data', (jsonArray) => {
-    new User(jsonArray).save();
+    User.insertMany(jsonArray);
   });
 
   dataStreamFromFile.on('end', () => {

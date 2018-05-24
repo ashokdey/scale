@@ -14,6 +14,26 @@ allUsers.get('/all', async (req, res) => {
       .checkQuery('currentPage', 'currentPage should be an integer')
       .isInt()
       .exists();
+    req
+      .checkQuery('status', 'status should be an integer')
+      .isIn(['unregistered', 'complete'])
+      .optional();
+    req
+      .checkQuery('phoneVerified', 'phoneVerified should be an boolean')
+      .isBoolean()
+      .optional();
+    req
+      .checkQuery('emailVerified', 'emailVerified should be an boolean')
+      .isBoolean()
+      .optional();
+    req
+      .checkQuery('createdOn', 'createdOn should be an integer')
+      .isDate()
+      .optional();
+    req
+      .checkQuery('updatedOn', 'updatedOn should be an integer')
+      .isDate()
+      .optional();
 
     const errors = req.validationErrors();
     if (errors) {
@@ -22,10 +42,21 @@ allUsers.get('/all', async (req, res) => {
 
     const currentPage = parseInt(req.query.currentPage, 10) || 0;
     const limit = parseInt(req.query.limit, 10) || 0;
+    const {
+      status, phoneVerified, emailVerified, createdOn, updatedOn,
+    } = req.query;
+
+    const findQuery = {};
+
+    if (status) findQuery.status = status;
+    if (phoneVerified) findQuery.phoneVerified = phoneVerified;
+    if (emailVerified) findQuery.emailVerified = emailVerified;
+    if (createdOn) findQuery.createdOn = createdOn;
+    if (updatedOn) findQuery.updatedOn = updatedOn;
 
     const skip = limit * (currentPage - 1);
 
-    const userData = await UserModel.find({})
+    const userData = await UserModel.find(findQuery)
       .limit(limit)
       .skip(skip);
 
