@@ -4,7 +4,7 @@ const JSONStream = require('JSONStream');
 const User = require('./src/models/User');
 const config = require('./config.json');
 
-mongoose.connect(config.MONGODB_URI, { poolSize: 500 });
+mongoose.connect(config.MONGODB_URI, { poolSize: config.DB_POOL_SIZE });
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
