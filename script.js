@@ -4,21 +4,29 @@ const JSONStream = require('JSONStream');
 const User = require('./src/models/User');
 const config = require('./config.json');
 
-mongoose.connect(config.MONGODB_URI, { poolSize: 50 });
+mongoose.connect(config.MONGODB_URI, { poolSize: 500 });
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
 
 db.on('open', () => {
-  console.log('Connected to mongo server.');
+  console.log('Connected to mongo server.\n');
+  process.stdout.write('Processing');
   const dataStreamFromFile = fs.createReadStream(`${__dirname}/users_large.json`);
-
-  dataStreamFromFile.pipe(JSONStream.parse('*')).on('data', (jsonArray) => {
-    User.insertMany(jsonArray);
+  let arrayOfUsers = [];
+  dataStreamFromFile.pipe(JSONStream.parse('*')).on('data', async (userData) => {
+    arrayOfUsers.push(userData);
+    if (arrayOfUsers.length === config.BATCH_INSERT_VALUE) {
+      dataStreamFromFile.pause();
+      await User.insertMany(arrayOfUsers);
+      arrayOfUsers = [];
+      process.stdout.write('.');
+      dataStreamFromFile.resume();
+    }
   });
 
   dataStreamFromFile.on('end', () => {
-    console.log('Import complete, closing connection...');
+    console.log('\nImport complete, closing connection...');
     db.close();
     process.exit(0);
   });
