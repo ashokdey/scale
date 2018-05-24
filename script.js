@@ -8,12 +8,12 @@ mongoose.connect(config.MONGODB_URI, { poolSize: config.DB_POOL_SIZE });
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
+let arrayOfUsers = [];
 
 db.on('open', () => {
   console.log('Connected to mongo server.\n');
-  process.stdout.write('Processing');
+  process.stdout.write('Processing.');
   const dataStreamFromFile = fs.createReadStream(`${__dirname}/users_large.json`);
-  let arrayOfUsers = [];
   dataStreamFromFile.pipe(JSONStream.parse('*')).on('data', async (userData) => {
     arrayOfUsers.push(userData);
     if (arrayOfUsers.length === config.BATCH_INSERT_VALUE) {
@@ -25,7 +25,8 @@ db.on('open', () => {
     }
   });
 
-  dataStreamFromFile.on('end', () => {
+  dataStreamFromFile.on('end', async () => {
+    await User.insertMany(arrayOfUsers); // left over data
     console.log('\nImport complete, closing connection...');
     db.close();
     process.exit(0);
