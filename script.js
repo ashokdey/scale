@@ -26,14 +26,16 @@ db.on('open', () => {
   });
 
   dataStreamFromFile.on('end', async () => {
-    await User.insertMany(arrayOfUsers); // left over data
-    console.log('\nImport complete, closing connection...');
+    if (arrayOfUsers.length) {
+      await User.insertMany(arrayOfUsers); // left over records
+    }
+    process.stdout.write('\nImport complete, closing connection...');
     db.close();
     process.exit(0);
   });
 });
 
 db.on('error', (err) => {
-  console.error('MongoDB connection error: ', err);
+  process.stderr.write('\nMongoDB connection error: ', err);
   process.exit(-1);
 });
