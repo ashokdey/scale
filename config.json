@@ -1,6 +1,6 @@
 {
   "PORT": "4040",
   "MONGODB_URI": "mongodb://127.0.0.1/dextra",
-  "BATCH_INSERT_VALUE": 80000,
+  "BATCH_INSERT_VALUE": 1000,
   "DB_POOL_SIZE": 50
 }
